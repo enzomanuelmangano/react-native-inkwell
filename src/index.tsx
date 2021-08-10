@@ -11,6 +11,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -26,6 +27,8 @@ interface InkWellProps {
 
 const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.1)';
 const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.05)';
+
+const INITIAL_SCALE = 0.03;
 
 const InkWell: React.FC<InkWellProps> = ({
   children,
@@ -43,7 +46,7 @@ const InkWell: React.FC<InkWellProps> = ({
   const rippleOpacity = useSharedValue(1);
   const highlightOpacity = useSharedValue(0);
 
-  const scale = useSharedValue(0);
+  const scale = useSharedValue(INITIAL_SCALE);
   const aref = useAnimatedRef<View>();
 
   const tapHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
@@ -61,7 +64,7 @@ const InkWell: React.FC<InkWellProps> = ({
       centerY.value = event.y - maxRippleRadius.value;
 
       cancelAnimation(scale);
-      scale.value = 0;
+      scale.value = INITIAL_SCALE;
       scale.value = withTiming(1, {
         duration: Math.max(maxRippleRadius.value / 0.3, 500),
       });
@@ -76,9 +79,12 @@ const InkWell: React.FC<InkWellProps> = ({
       scale.value = withTiming(1, {
         duration: Math.max(maxRippleRadius.value / 0.325, 500),
       });
-      rippleOpacity.value = withTiming(0, {
-        duration: Math.max(maxRippleRadius.value / 2, 200),
-      });
+      rippleOpacity.value = withDelay(
+        150,
+        withTiming(0, {
+          duration: Math.max(maxRippleRadius.value / 2, 200),
+        })
+      );
       highlightOpacity.value = withTiming(0);
     },
   });
