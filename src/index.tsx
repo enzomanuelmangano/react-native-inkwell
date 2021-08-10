@@ -20,7 +20,12 @@ interface InkWellProps {
   onTapDown?: () => void;
   onTap?: () => void;
   onTapCancel?: () => void;
+  splashColor?: string;
+  highlightColor?: string;
 }
+
+const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.1)';
+const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.05)';
 
 const InkWell: React.FC<InkWellProps> = ({
   children,
@@ -28,12 +33,16 @@ const InkWell: React.FC<InkWellProps> = ({
   onTap,
   onTapDown,
   onTapCancel,
+  splashColor = DEFAULT_SPLASH_COLOR,
+  highlightColor = DEFAULT_HIGHLIGHT_COLOR,
 }) => {
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
 
   const maxRippleSize = useSharedValue(0);
   const rippleOpacity = useSharedValue(1);
+  const highlightOpacity = useSharedValue(0);
+
   const scale = useSharedValue(0);
   const aref = useAnimatedRef<View>();
 
@@ -42,6 +51,10 @@ const InkWell: React.FC<InkWellProps> = ({
       if (onTapDown) runOnJS(onTapDown)();
 
       const halfRippleSize = maxRippleSize.value / 2;
+
+      cancelAnimation(highlightOpacity);
+      highlightOpacity.value = 0;
+      highlightOpacity.value = withTiming(1);
 
       cancelAnimation(rippleOpacity);
       rippleOpacity.value = 1;
@@ -68,6 +81,7 @@ const InkWell: React.FC<InkWellProps> = ({
       rippleOpacity.value = withTiming(0, {
         duration: Math.max(maxRippleSize.value / 4, 200),
       });
+      highlightOpacity.value = withTiming(0);
     },
   });
 
@@ -100,11 +114,26 @@ const InkWell: React.FC<InkWellProps> = ({
     };
   });
 
+  const rHighlightStyle = useAnimatedStyle(() => ({
+    opacity: highlightOpacity.value,
+  }));
+
   return (
     <View ref={aref} style={style}>
       <TapGestureHandler onGestureEvent={tapHandler}>
         <Animated.View style={[style, styles.content]}>
-          <Animated.View style={[styles.ripple, rStyle]} />
+          <Animated.View
+            style={[
+              {
+                ...StyleSheet.absoluteFillObject,
+                backgroundColor: highlightColor,
+              },
+              rHighlightStyle,
+            ]}
+          />
+          <Animated.View
+            style={[styles.ripple, { backgroundColor: splashColor }, rStyle]}
+          />
           {children}
         </Animated.View>
       </TapGestureHandler>
@@ -114,7 +143,6 @@ const InkWell: React.FC<InkWellProps> = ({
 
 const styles = StyleSheet.create({
   ripple: {
-    backgroundColor: 'rgba(0,0,0,0.1)',
     position: 'absolute',
     top: 0,
     left: 0,
