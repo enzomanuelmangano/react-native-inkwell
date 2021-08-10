@@ -6,6 +6,7 @@ import {
 } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
+  runOnJS,
   useAnimatedGestureHandler,
   useAnimatedRef,
   useAnimatedStyle,
@@ -16,9 +17,18 @@ import Animated, {
 interface InkWellProps {
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
+  onTapDown?: () => void;
+  onTap?: () => void;
+  onTapCancel?: () => void;
 }
 
-const InkWell: React.FC<InkWellProps> = ({ children, style }) => {
+const InkWell: React.FC<InkWellProps> = ({
+  children,
+  style,
+  onTap,
+  onTapDown,
+  onTapCancel,
+}) => {
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
 
@@ -29,6 +39,8 @@ const InkWell: React.FC<InkWellProps> = ({ children, style }) => {
 
   const tapHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
     onStart: (event) => {
+      if (onTapDown) runOnJS(onTapDown)();
+
       const halfRippleSize = maxRippleSize.value / 2;
 
       cancelAnimation(rippleOpacity);
@@ -39,12 +51,20 @@ const InkWell: React.FC<InkWellProps> = ({ children, style }) => {
 
       cancelAnimation(scale);
       scale.value = 0;
-      console.log(halfRippleSize / 0.6);
       scale.value = withTiming(1, {
-        duration: Math.max(halfRippleSize / 0.6, 500),
+        duration: Math.max(halfRippleSize / 0.3, 500),
       });
     },
+    onActive: () => {
+      if (onTap) runOnJS(onTap)();
+    },
+    onCancel: () => {
+      if (onTapCancel) runOnJS(onTapCancel)();
+    },
     onFinish: () => {
+      scale.value = withTiming(1, {
+        duration: Math.max(maxRippleSize.value / 0.65, 500),
+      });
       rippleOpacity.value = withTiming(0, {
         duration: Math.max(maxRippleSize.value / 4, 200),
       });
