@@ -1,38 +1,47 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
+
+import { ScrollView } from 'react-native-gesture-handler';
 import { InkWell } from 'react-native-inkwell';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <InkWell
-        onTap={() => {
-          console.log('Tapped');
-        }}
-        style={styles.button}
-      >
-        <Text>Result</Text>
-      </InkWell>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.list}>
+        {new Array(5).fill(0).map((_, index) => (
+          <View key={index.toString()} style={styles.buttonContainer}>
+            <InkWell
+              onTap={() => {
+                console.log('Tapped');
+              }}
+              style={styles.button}
+            />
+          </View>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.02)',
+  },
+  list: {
+    flex: 1,
+    marginTop: 20,
   },
   button: {
-    width: '50%',
-    aspectRatio: 1,
+    width: '90%',
+    height: 70,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 50,
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 20 },
+    shadowRadius: 10,
     borderRadius: 20,
   },
   box: {
@@ -40,4 +49,5 @@ const styles = StyleSheet.create({
     height: 60,
     marginVertical: 20,
   },
+  buttonContainer: { width: '100%', alignItems: 'center', marginVertical: 10 },
 });
