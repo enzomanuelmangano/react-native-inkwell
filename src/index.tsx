@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import {
-  TapGestureHandler,
+import type {
+  GestureEventPayload,
+  LongPressGestureHandlerGestureEvent,
+  TapGestureHandlerEventPayload,
   TapGestureHandlerGestureEvent,
 } from 'react-native-gesture-handler';
+import React, { useCallback, useEffect } from 'react';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, {
   cancelAnimation,
   runOnJS,
@@ -15,20 +17,22 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { TapGestureDetector } from './tap-gesture-detector';
+
 interface InkWellProps {
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
   onTapDown?: () => void;
   onTap?: () => void;
   onTapCancel?: () => void;
+  onDoubleTap?: () => void;
+  onLongPress?: () => void;
   splashColor?: string;
   highlightColor?: string;
 }
 
 const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.1)';
 const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.05)';
-
-const INITIAL_SCALE = 0.03;
 
 const InkWell: React.FC<InkWellProps> = ({
   children,
@@ -38,6 +42,8 @@ const InkWell: React.FC<InkWellProps> = ({
   onTapCancel,
   splashColor = DEFAULT_SPLASH_COLOR,
   highlightColor = DEFAULT_HIGHLIGHT_COLOR,
+  onDoubleTap,
+  onLongPress,
 }) => {
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
@@ -46,13 +52,27 @@ const InkWell: React.FC<InkWellProps> = ({
   const rippleOpacity = useSharedValue(1);
   const highlightOpacity = useSharedValue(0);
 
-  const scale = useSharedValue(INITIAL_SCALE);
+  const initialScale = !onDoubleTap ? 0.03 : 0;
+  const scale = useSharedValue(initialScale);
   const aref = useAnimatedRef<View>();
 
-  const tapHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
-    onStart: (event) => {
-      if (onTapDown) runOnJS(onTapDown)();
+  const onFinish = useCallback(() => {
+    'worklet';
+    scale.value = withTiming(1, {
+      duration: Math.max(maxRippleRadius.value / 0.325, 500),
+    });
+    rippleOpacity.value = withDelay(
+      150,
+      withTiming(0, {
+        duration: Math.max(maxRippleRadius.value / 2, 200),
+      })
+    );
+    highlightOpacity.value = withTiming(0);
+  }, [highlightOpacity, maxRippleRadius.value, rippleOpacity, scale]);
 
+  const onStart = useCallback(
+    (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
+      'worklet';
       cancelAnimation(highlightOpacity);
       highlightOpacity.value = 0;
       highlightOpacity.value = withTiming(1);
@@ -64,10 +84,26 @@ const InkWell: React.FC<InkWellProps> = ({
       centerY.value = event.y - maxRippleRadius.value;
 
       cancelAnimation(scale);
-      scale.value = INITIAL_SCALE;
+      scale.value = initialScale;
       scale.value = withTiming(1, {
         duration: Math.max(maxRippleRadius.value / 0.3, 500),
       });
+    },
+    [
+      centerX,
+      centerY,
+      highlightOpacity,
+      initialScale,
+      maxRippleRadius.value,
+      rippleOpacity,
+      scale,
+    ]
+  );
+
+  const tapHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
+    onStart: (event) => {
+      if (onTapDown) runOnJS(onTapDown)();
+      onStart(event);
     },
     onActive: () => {
       if (onTap) runOnJS(onTap)();
@@ -75,19 +111,27 @@ const InkWell: React.FC<InkWellProps> = ({
     onCancel: () => {
       if (onTapCancel) runOnJS(onTapCancel)();
     },
-    onFinish: () => {
-      scale.value = withTiming(1, {
-        duration: Math.max(maxRippleRadius.value / 0.325, 500),
-      });
-      rippleOpacity.value = withDelay(
-        150,
-        withTiming(0, {
-          duration: Math.max(maxRippleRadius.value / 2, 200),
-        })
-      );
-      highlightOpacity.value = withTiming(0);
-    },
+    onFinish,
   });
+
+  const onDoubleTapGestureEvent =
+    useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
+      onStart,
+      onActive: () => {
+        if (onDoubleTap) runOnJS(onDoubleTap)();
+      },
+      onFinish,
+    });
+
+  const onLongPressGestureEvent =
+    useAnimatedGestureHandler<LongPressGestureHandlerGestureEvent>({
+      onActive: (event) => {
+        // TODO: Investigate on event.oldState
+        if (onLongPress && (event as any).oldState !== 0)
+          runOnJS(onLongPress)();
+      },
+      onFinish,
+    });
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -124,7 +168,11 @@ const InkWell: React.FC<InkWellProps> = ({
 
   return (
     <View ref={aref} style={style}>
-      <TapGestureHandler onGestureEvent={tapHandler}>
+      <TapGestureDetector
+        longPressOnGestureEvent={onLongPress && onLongPressGestureEvent}
+        doubleTapOnGestureEvent={onDoubleTap && onDoubleTapGestureEvent}
+        singleTapOnGestureEvent={tapHandler}
+      >
         <Animated.View style={[style, styles.content]}>
           <Animated.View
             style={[
@@ -140,7 +188,7 @@ const InkWell: React.FC<InkWellProps> = ({
           />
           {children}
         </Animated.View>
-      </TapGestureHandler>
+      </TapGestureDetector>
     </View>
   );
 };

@@ -11,12 +11,7 @@ export default function App() {
       <ScrollView style={styles.list}>
         {new Array(5).fill(0).map((_, index) => (
           <View key={index.toString()} style={styles.buttonContainer}>
-            <InkWell
-              onTap={() => {
-                console.log('Tapped');
-              }}
-              style={styles.button}
-            />
+            <InkWell style={styles.button} />
           </View>
         ))}
       </ScrollView>
