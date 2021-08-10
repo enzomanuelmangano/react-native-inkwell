@@ -39,7 +39,7 @@ const InkWell: React.FC<InkWellProps> = ({
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
 
-  const maxRippleSize = useSharedValue(0);
+  const maxRippleRadius = useSharedValue(0);
   const rippleOpacity = useSharedValue(1);
   const highlightOpacity = useSharedValue(0);
 
@@ -50,8 +50,6 @@ const InkWell: React.FC<InkWellProps> = ({
     onStart: (event) => {
       if (onTapDown) runOnJS(onTapDown)();
 
-      const halfRippleSize = maxRippleSize.value / 2;
-
       cancelAnimation(highlightOpacity);
       highlightOpacity.value = 0;
       highlightOpacity.value = withTiming(1);
@@ -59,13 +57,13 @@ const InkWell: React.FC<InkWellProps> = ({
       cancelAnimation(rippleOpacity);
       rippleOpacity.value = 1;
 
-      centerX.value = event.x - halfRippleSize;
-      centerY.value = event.y - halfRippleSize;
+      centerX.value = event.x - maxRippleRadius.value;
+      centerY.value = event.y - maxRippleRadius.value;
 
       cancelAnimation(scale);
       scale.value = 0;
       scale.value = withTiming(1, {
-        duration: Math.max(halfRippleSize / 0.3, 500),
+        duration: Math.max(maxRippleRadius.value / 0.3, 500),
       });
     },
     onActive: () => {
@@ -76,10 +74,10 @@ const InkWell: React.FC<InkWellProps> = ({
     },
     onFinish: () => {
       scale.value = withTiming(1, {
-        duration: Math.max(maxRippleSize.value / 0.65, 500),
+        duration: Math.max(maxRippleRadius.value / 0.325, 500),
       });
       rippleOpacity.value = withTiming(0, {
-        duration: Math.max(maxRippleSize.value / 4, 200),
+        duration: Math.max(maxRippleRadius.value / 2, 200),
       });
       highlightOpacity.value = withTiming(0);
     },
@@ -89,14 +87,14 @@ const InkWell: React.FC<InkWellProps> = ({
     const timeout = setTimeout(() => {
       if (!aref || !aref.current) return;
       aref.current.measure((_, __, width, height) => {
-        maxRippleSize.value = Math.sqrt(width ** 2 + height ** 2) * 2;
+        maxRippleRadius.value = Math.sqrt(width ** 2 + height ** 2);
       });
     }, 0);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [aref, maxRippleSize]);
+  }, [aref, maxRippleRadius]);
 
   const rStyle = useAnimatedStyle(() => {
     return {
@@ -107,9 +105,9 @@ const InkWell: React.FC<InkWellProps> = ({
         { translateY: centerY.value },
         { scale: scale.value },
       ],
-      width: maxRippleSize.value,
-      height: maxRippleSize.value,
-      borderRadius: maxRippleSize.value / 2,
+      width: maxRippleRadius.value * 2,
+      height: maxRippleRadius.value * 2,
+      borderRadius: maxRippleRadius.value,
       opacity: rippleOpacity.value,
     };
   });
