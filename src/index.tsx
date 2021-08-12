@@ -1,10 +1,13 @@
-import type {
+import {
   GestureEventPayload,
+  LongPressGestureHandler,
   LongPressGestureHandlerGestureEvent,
+  TapGestureHandler,
   TapGestureHandlerEventPayload,
   TapGestureHandlerGestureEvent,
+  TapGestureHandlerProps,
 } from 'react-native-gesture-handler';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, {
   cancelAnimation,
@@ -17,9 +20,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { TapGestureDetector } from './tap-gesture-detector';
-
-interface InkWellProps {
+interface InkWellProps extends Pick<TapGestureHandlerProps, 'maxDelayMs'> {
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
   onTapDown?: () => void;
@@ -31,8 +32,9 @@ interface InkWellProps {
   highlightColor?: string;
 }
 
-const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.1)';
-const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.05)';
+const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.08)';
+const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.03)';
+const TAP_MAX_DURATION_MS = 3000;
 
 const InkWell: React.FC<InkWellProps> = ({
   children,
@@ -44,6 +46,7 @@ const InkWell: React.FC<InkWellProps> = ({
   highlightColor = DEFAULT_HIGHLIGHT_COLOR,
   onDoubleTap,
   onLongPress,
+  maxDelayMs,
 }) => {
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
@@ -52,23 +55,8 @@ const InkWell: React.FC<InkWellProps> = ({
   const rippleOpacity = useSharedValue(1);
   const highlightOpacity = useSharedValue(0);
 
-  const initialScale = !onDoubleTap ? 0.03 : 0;
-  const scale = useSharedValue(initialScale);
+  const scale = useSharedValue(0);
   const aref = useAnimatedRef<View>();
-
-  const onFinish = useCallback(() => {
-    'worklet';
-    scale.value = withTiming(1, {
-      duration: Math.max(maxRippleRadius.value / 0.325, 500),
-    });
-    rippleOpacity.value = withDelay(
-      150,
-      withTiming(0, {
-        duration: Math.max(maxRippleRadius.value / 2, 200),
-      })
-    );
-    highlightOpacity.value = withTiming(0);
-  }, [highlightOpacity, maxRippleRadius.value, rippleOpacity, scale]);
 
   const onStart = useCallback(
     (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
@@ -84,7 +72,7 @@ const InkWell: React.FC<InkWellProps> = ({
       centerY.value = event.y - maxRippleRadius.value;
 
       cancelAnimation(scale);
-      scale.value = initialScale;
+      scale.value = 0;
       scale.value = withTiming(1, {
         duration: Math.max(maxRippleRadius.value / 0.3, 500),
       });
@@ -93,12 +81,28 @@ const InkWell: React.FC<InkWellProps> = ({
       centerX,
       centerY,
       highlightOpacity,
-      initialScale,
       maxRippleRadius.value,
       rippleOpacity,
       scale,
     ]
   );
+
+  const onFinish = useCallback(() => {
+    'worklet';
+    highlightOpacity.value = withTiming(0, { duration: 100 });
+
+    rippleOpacity.value = withDelay(
+      150,
+      withTiming(0, {
+        duration: 250,
+      })
+    );
+
+    cancelAnimation(scale);
+    scale.value = withTiming(1, {
+      duration: 500,
+    });
+  }, [highlightOpacity, rippleOpacity, scale]);
 
   const tapHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
     onStart: (event) => {
@@ -127,8 +131,9 @@ const InkWell: React.FC<InkWellProps> = ({
     useAnimatedGestureHandler<LongPressGestureHandlerGestureEvent>({
       onActive: (event) => {
         // TODO: Investigate on event.oldState
-        if (onLongPress && (event as any).oldState !== 0)
+        if (onLongPress && (event as any).oldState === 2) {
           runOnJS(onLongPress)();
+        }
       },
       onFinish,
     });
@@ -166,29 +171,55 @@ const InkWell: React.FC<InkWellProps> = ({
     opacity: highlightOpacity.value,
   }));
 
+  const singleTapRef = useRef(null);
+  const doubleTapRef = useRef(null);
+
   return (
     <View ref={aref} style={style}>
-      <TapGestureDetector
-        longPressOnGestureEvent={onLongPress && onLongPressGestureEvent}
-        doubleTapOnGestureEvent={onDoubleTap && onDoubleTapGestureEvent}
-        singleTapOnGestureEvent={tapHandler}
+      <LongPressGestureHandler
+        enabled={Boolean(onLongPress)}
+        onGestureEvent={onLongPressGestureEvent}
       >
-        <Animated.View style={[style, styles.content]}>
-          <Animated.View
-            style={[
-              {
-                ...StyleSheet.absoluteFillObject,
-                backgroundColor: highlightColor,
-              },
-              rHighlightStyle,
-            ]}
-          />
-          <Animated.View
-            style={[styles.ripple, { backgroundColor: splashColor }, rStyle]}
-          />
-          {children}
+        <Animated.View style={StyleSheet.absoluteFill}>
+          <TapGestureHandler
+            enabled={Boolean(onDoubleTap)}
+            ref={doubleTapRef}
+            numberOfTaps={2}
+            onGestureEvent={onDoubleTapGestureEvent}
+            maxDurationMs={TAP_MAX_DURATION_MS}
+            maxDelayMs={maxDelayMs}
+          >
+            <Animated.View style={StyleSheet.absoluteFill}>
+              <TapGestureHandler
+                ref={singleTapRef}
+                waitFor={doubleTapRef}
+                onGestureEvent={tapHandler}
+                maxDurationMs={TAP_MAX_DURATION_MS}
+              >
+                <Animated.View style={[style, styles.content]}>
+                  <Animated.View
+                    style={[
+                      {
+                        ...StyleSheet.absoluteFillObject,
+                        backgroundColor: highlightColor,
+                      },
+                      rHighlightStyle,
+                    ]}
+                  />
+                  <Animated.View
+                    style={[
+                      styles.ripple,
+                      { backgroundColor: splashColor },
+                      rStyle,
+                    ]}
+                  />
+                  {children}
+                </Animated.View>
+              </TapGestureHandler>
+            </Animated.View>
+          </TapGestureHandler>
         </Animated.View>
-      </TapGestureDetector>
+      </LongPressGestureHandler>
     </View>
   );
 };
