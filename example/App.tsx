@@ -9,7 +9,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.list}>
-        {new Array(5).fill(0).map((_, index) => (
+        {new Array(10).fill(0).map((_, index) => (
           <View key={index.toString()} style={styles.buttonContainer}>
             <InkWell style={styles.button} />
           </View>
