@@ -1,7 +1,7 @@
 {
   "name": "react-native-inkwell",
   "version": "0.1.0",
-  "description": "''",
+  "description": "A material touchable area that provides the ripple effect",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -33,8 +33,9 @@
   },
   "keywords": [
     "react-native",
-    "ios",
-    "android"
+    "material",
+    "material-design",
+    "ripple"
   ],
   "repository": "https://github.com/enzomanuelmangano/react-native-inkwell",
   "author": "Enzo Manuel Mangano <enzomanuelmangano@gmail.com> (https://github.com/enzomanuelmangano)",
