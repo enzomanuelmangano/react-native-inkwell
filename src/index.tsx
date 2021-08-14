@@ -22,8 +22,15 @@ const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.08)';
 const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.03)';
 const DEFAULT_TAP_MAX_DURATION_MS = 3000;
 
+const clamp = (min: number, max: number, val: number) => {
+  'worklet';
+  return Math.min(Math.max(min, val), max);
+};
+
 const InkWell: React.FC<InkWellProps> = ({
+  enabled,
   children,
+  radius,
   style,
   onTap,
   onTapDown,
@@ -33,6 +40,8 @@ const InkWell: React.FC<InkWellProps> = ({
   onDoubleTap,
   onLongPress,
   maxDelayMs,
+  simultaneousHandlers,
+  waitFor,
 }) => {
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
@@ -112,14 +121,17 @@ const InkWell: React.FC<InkWellProps> = ({
     const timeout = setTimeout(() => {
       if (!aref || !aref.current) return;
       aref.current.measure((_, __, width, height) => {
-        maxRippleRadius.value = Math.sqrt(width ** 2 + height ** 2);
+        const rippleRadius = Math.sqrt(width ** 2 + height ** 2);
+        maxRippleRadius.value = radius
+          ? clamp(0, radius, rippleRadius)
+          : rippleRadius;
       });
     }, 0);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [aref, maxRippleRadius]);
+  }, [aref, maxRippleRadius, radius]);
 
   const rStyle = useAnimatedStyle(() => {
     return {
@@ -147,22 +159,28 @@ const InkWell: React.FC<InkWellProps> = ({
   return (
     <View ref={aref} style={style}>
       <LongPressGestureHandler
-        enabled={Boolean(onLongPress)}
+        enabled={Boolean(onLongPress) && enabled}
         onGestureEvent={onLongPressGestureEvent}
+        simultaneousHandlers={simultaneousHandlers}
+        waitFor={waitFor}
       >
         <Animated.View style={StyleSheet.absoluteFill}>
           <TapGestureHandler
-            enabled={Boolean(onDoubleTap)}
+            enabled={Boolean(onDoubleTap) && enabled}
             ref={doubleTapRef}
             numberOfTaps={2}
             onGestureEvent={onDoubleTapGestureEvent}
             maxDurationMs={DEFAULT_TAP_MAX_DURATION_MS}
             maxDelayMs={maxDelayMs}
+            simultaneousHandlers={simultaneousHandlers}
+            waitFor={waitFor}
           >
             <Animated.View style={StyleSheet.absoluteFill}>
               <TapGestureHandler
+                enabled={enabled}
                 ref={singleTapRef}
-                waitFor={doubleTapRef}
+                waitFor={waitFor ? [doubleTapRef, waitFor] : doubleTapRef}
+                simultaneousHandlers={simultaneousHandlers}
                 onGestureEvent={onSingleTapGestureEvent}
                 maxDurationMs={DEFAULT_TAP_MAX_DURATION_MS}
               >

@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
   buttonContainer: { width: '100%', alignItems: 'center', marginVertical: 10 },
 });
 
-export { App };
+export default App;

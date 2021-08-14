@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { TapGestureHandlerProps } from 'react-native-gesture-handler';
 
@@ -17,10 +17,14 @@ type LongPressGestureHandlerProps = {
 };
 
 type InkWellProps = {
+  enabled?: boolean;
+  radius?: number;
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   splashColor?: string;
   highlightColor?: string;
+  waitFor?: Ref<unknown>;
+  simultaneousHandlers?: Ref<unknown>;
 } & SingleTapGestureHandlerProps &
   DoubleTapGestureHandlerProps &
   LongPressGestureHandlerProps;
