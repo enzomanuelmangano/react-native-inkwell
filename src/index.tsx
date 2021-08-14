@@ -1,11 +1,11 @@
+import React, { useCallback, useEffect, useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
 import {
   GestureEventPayload,
   LongPressGestureHandler,
   TapGestureHandler,
   TapGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
-import React, { useCallback, useEffect, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   useAnimatedRef,
@@ -14,8 +14,9 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
-import type { InkWellProps } from './types';
+
 import { useTapGestureEvent } from './hooks/use-tap-gesture-event';
+import type { InkWellProps } from './types';
 
 const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.08)';
 const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.03)';

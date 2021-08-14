@@ -5,7 +5,6 @@ import type {
   TapGestureHandlerEventPayload,
   TapGestureHandlerGestureEvent,
 } from 'react-native-gesture-handler';
-
 import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
@@ -24,10 +23,11 @@ type UseTapGestureEventProps = SingleTapGestureHandlerProps &
         GestureEventPayload &
           (TapGestureHandlerEventPayload | LongPressGestureHandlerEventPayload)
       >,
-      {}
+      Record<string, unknown>
     >;
   };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useTapGestureEvent = ({
   onTap,
   onTapCancel,
