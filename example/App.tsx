@@ -1,11 +1,9 @@
 import * as React from 'react';
-
 import { StyleSheet, View, SafeAreaView } from 'react-native';
-
 import { ScrollView } from 'react-native-gesture-handler';
 import { InkWell } from 'react-native-inkwell';
 
-export default function App() {
+const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.list}>
@@ -17,7 +15,7 @@ export default function App() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -40,10 +38,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     elevation: 5,
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
   buttonContainer: { width: '100%', alignItems: 'center', marginVertical: 10 },
 });
+
+export { App };

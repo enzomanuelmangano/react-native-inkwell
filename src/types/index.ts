@@ -1,25 +1,33 @@
-import type { TapGestureHandlerProps } from 'react-native-gesture-handler';
+import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
+import type { TapGestureHandlerProps } from 'react-native-gesture-handler';
 
-export type SingleTapGestureHandlerProps = {
+type SingleTapGestureHandlerProps = {
   onTapDown?: () => void;
   onTap?: () => void;
   onTapCancel?: () => void;
 };
 
-export type DoubleTapGestureHandlerProps = {
+type DoubleTapGestureHandlerProps = {
   onDoubleTap?: () => void;
 } & Pick<TapGestureHandlerProps, 'maxDelayMs'>;
 
-export type LongPressGestureHandlerProps = {
+type LongPressGestureHandlerProps = {
   onLongPress?: () => void;
 };
 
-export type InkWellProps = {
+type InkWellProps = {
   style?: StyleProp<ViewStyle>;
-  children?: React.ReactNode;
+  children?: ReactNode;
   splashColor?: string;
   highlightColor?: string;
 } & SingleTapGestureHandlerProps &
   DoubleTapGestureHandlerProps &
   LongPressGestureHandlerProps;
+
+export {
+  SingleTapGestureHandlerProps,
+  DoubleTapGestureHandlerProps,
+  LongPressGestureHandlerProps,
+  InkWellProps,
+};
