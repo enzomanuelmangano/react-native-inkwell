@@ -42,6 +42,7 @@ const InkWell: React.FC<InkWellProps> = ({
   maxDelayMs,
   simultaneousHandlers,
   waitFor,
+  minDurationMs,
 }) => {
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
@@ -163,6 +164,7 @@ const InkWell: React.FC<InkWellProps> = ({
         onGestureEvent={onLongPressGestureEvent}
         simultaneousHandlers={simultaneousHandlers}
         waitFor={waitFor}
+        minDurationMs={minDurationMs}
       >
         <Animated.View style={StyleSheet.absoluteFill}>
           <TapGestureHandler

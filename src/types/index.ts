@@ -1,6 +1,9 @@
 import type { ReactNode, Ref } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import type { TapGestureHandlerProps } from 'react-native-gesture-handler';
+import type {
+  LongPressGestureHandlerProps as LongPressGestureProps,
+  TapGestureHandlerProps,
+} from 'react-native-gesture-handler';
 
 type SingleTapGestureHandlerProps = {
   onTapDown?: () => void;
@@ -14,7 +17,7 @@ type DoubleTapGestureHandlerProps = {
 
 type LongPressGestureHandlerProps = {
   onLongPress?: () => void;
-};
+} & Pick<LongPressGestureProps, 'minDurationMs'>;
 
 type InkWellProps = {
   enabled?: boolean;
