@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { InkWell } from 'react-native-inkwell';
+import InkWell from 'react-native-inkwell';
 
 const App = () => {
   return (

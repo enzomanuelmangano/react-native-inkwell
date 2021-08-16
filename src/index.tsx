@@ -223,4 +223,5 @@ const styles = StyleSheet.create({
   content: { overflow: 'hidden', width: '100%', height: '100%' },
 });
 
-export { InkWell };
+export type { InkWellProps };
+export default InkWell;

@@ -23,7 +23,7 @@ yarn add react-native-inkwell
 ## Usage
 
 ```jsx
-import { InkWell } from 'react-native-inkwell';
+import InkWell from 'react-native-inkwell';
 
 const YourRippleButton = () => (
   <InkWell
