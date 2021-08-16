@@ -6,7 +6,7 @@ A material touchable area that provides the ripple effect.
 Inspired by the [InkWell Flutter](https://api.flutter.dev/flutter/material/InkWell-class.html) component.
 
 <div>
-    <img src="https://raw.githubusercontent.com/enzomanuelmangano/react-native-inkwell/blob/main/.assets/inkwell_image.png" title="react-native-inkwell">
+    <img src="https://github.com/enzomanuelmangano/react-native-inkwell/blob/main/.assets/inkwell_image.png" title="react-native-inkwell">
 </div>
 
 ## Installation
