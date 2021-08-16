@@ -18,7 +18,7 @@ import Animated, {
 import { useTapGestureEvent } from './hooks/use-tap-gesture-event';
 import type { InkWellProps } from './types';
 
-const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.08)';
+const DEFAULT_SPLASH_COLOR = 'rgba(0,0,0,0.1)';
 const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.03)';
 const DEFAULT_TAP_MAX_DURATION_MS = 3000;
 
