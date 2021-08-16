@@ -11,7 +11,10 @@ Inspired by the [InkWell Flutter](https://api.flutter.dev/flutter/material/InkWe
 
 ## Installation
 
-**You need to have already installed the `react-native-reanimated` (>= 2.0.0) and the `react-native-gesture-handler` (>= 1.0.0) packages**
+\*\*You need to have already installed the following packages:
+
+- [react-native-reanimated (>= 2.0.0)](https://docs.swmansion.com/react-native-reanimated/)
+- [react-native-gesture-handler (>= 1.0.0)](https://docs.swmansion.com/react-native-gesture-handler/)
 
 ```sh
 yarn add react-native-inkwell
@@ -44,7 +47,9 @@ const YourRippleButton = () => (
 
 ### `enabled?: boolean`
 
-Indicates whether InkWell should be active or not (default true)
+Indicates whether InkWell should be active or not.
+
+Default: true.
 
 ---
 
@@ -56,7 +61,7 @@ Decides the maximum radius of the Ripple Effect. By default the Ripple effect wi
 
 ### `onTap?: () => void`
 
-Called when the InkWell is clicked. If the onDoubleTap callback is not specified, onTap will be called immediately, otherwise it will be called after maxDelayMs.
+Called when the InkWell is clicked. If the onDoubleTap callback is not specified, onTap will be called immediately, otherwise it will be called after [maxDelayMs](https://github.com/enzomanuelmangano/react-native-inkwell/tree/main#maxdelayms-number).
 
 ---
 
@@ -74,13 +79,13 @@ Called when the user cancels a tap.
 
 ### `onDoubleTap?: () => void`
 
-Called when the InkWell is clicked two consecutive times in less than maxDelayMs.
+Called when the InkWell is clicked two consecutive times in less than [maxDelayMs](https://github.com/enzomanuelmangano/react-native-inkwell/tree/main#maxdelayms-number).
 
 ---
 
 ### `onLongPress?: () => void`
 
-Called when the component is pressed for more than minDurationMs.
+Called when the component is pressed for more than [minDurationMs](https://github.com/enzomanuelmangano/react-native-inkwell/tree/main#mindurationms-number).
 
 ---
 
@@ -132,7 +137,7 @@ The component that could be contained in the InkWell.
 
 ---
 
-### simultaneousHandlers and waitFor
+### `simultaneousHandlers and waitFor`
 
 [Inherited from react-native-gesture-handler in order to support Cross Handler Interactions if needed.](https://docs.swmansion.com/react-native-gesture-handler/docs/interactions/)
 
