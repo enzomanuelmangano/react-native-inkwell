@@ -38,9 +38,9 @@ export const useTapGestureEvent = ({
 }: UseTapGestureEventProps) => {
   const onSingleTapGestureEvent =
     useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
-      onStart: (event) => {
+      onStart: (event, ctx) => {
         if (onTapDown) runOnJS(onTapDown)();
-        handlers?.onStart?.(event, {});
+        handlers?.onStart?.(event, ctx);
       },
       onActive: () => {
         if (onTap) runOnJS(onTap)();
