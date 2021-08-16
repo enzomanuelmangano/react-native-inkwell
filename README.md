@@ -11,7 +11,7 @@ Inspired by the [InkWell Flutter](https://api.flutter.dev/flutter/material/InkWe
 
 ## Installation
 
-\*\*You need to have already installed the following packages:
+**You need to have already installed the following packages:**
 
 - [react-native-reanimated (>= 2.0.0)](https://docs.swmansion.com/react-native-reanimated/)
 - [react-native-gesture-handler (>= 1.0.0)](https://docs.swmansion.com/react-native-gesture-handler/)
@@ -49,7 +49,7 @@ const YourRippleButton = () => (
 
 Indicates whether InkWell should be active or not.
 
-Default: true.
+Default: `true`.
 
 ---
 
@@ -95,7 +95,7 @@ Called when the component is pressed for more than [minDurationMs](https://githu
 
 This property is inherited from maxDelayMs of the react-native-gesture-handler's TapGestureHandler.
 
-Default: 500
+Default: `500`
 
 ---
 
@@ -105,7 +105,7 @@ Default: 500
 
 This property is inherited from minDurationMs of the react-native-gesture-handler's LongPressGestureHandler.
 
-Default: 500
+Default: `500`
 
 ---
 
@@ -113,7 +113,7 @@ Default: 500
 
 The splash color of the ripple effect.
 
-Default: 'rgba(0,0,0,0.1)';
+Default: `rgba(0,0,0,0.1)`;
 
 ---
 
@@ -121,7 +121,7 @@ Default: 'rgba(0,0,0,0.1)';
 
 The backgroundColor of the View when the InkWell is activated.
 
-Default: 'rgba(0,0,0,0.03)';
+Default: `rgba(0,0,0,0.03)`;
 
 ---
 
