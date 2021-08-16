@@ -9,7 +9,12 @@ const App = () => {
       <ScrollView style={styles.list}>
         {new Array(10).fill(0).map((_, index) => (
           <View key={index.toString()} style={styles.buttonContainer}>
-            <InkWell style={styles.button} />
+            <InkWell
+              style={styles.button}
+              onTap={() => {
+                console.log('tapped');
+              }}
+            />
           </View>
         ))}
       </ScrollView>
@@ -28,7 +33,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '90%',
-    height: 70,
+    height: 100,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
