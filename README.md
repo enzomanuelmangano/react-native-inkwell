@@ -1,12 +1,12 @@
 <h1 align="center">
-👉🏼 react-native-inkwell
+👉🏼 React Native InkWell
 </h1>
 
 A material touchable area that provides the ripple effect.
 Inspired by the [InkWell Flutter](https://api.flutter.dev/flutter/material/InkWell-class.html) component.
 
-<div>
-    <img src="https://github.com/enzomanuelmangano/react-native-inkwell/blob/main/.assets/inkwell_image.png" title="react-native-inkwell">
+<div align="center">
+    <img src="https://github.com/enzomanuelmangano/react-native-inkwell/blob/main/.assets/inkwell_image.jpg" title="react-native-inkwell">
 </div>
 
 ## Installation
@@ -117,7 +117,7 @@ Default: `rgba(0,0,0,0.1)`;
 
 ---
 
-### `highlighColor?: string`
+### `highlightColor?: string`
 
 The backgroundColor of the View when the InkWell is activated.
 
