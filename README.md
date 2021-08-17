@@ -13,11 +13,19 @@ Inspired by the [InkWell Flutter](https://api.flutter.dev/flutter/material/InkWe
 
 **You need to have already installed the following packages:**
 
-- [react-native-reanimated (>= 2.0.0)](https://docs.swmansion.com/react-native-reanimated/)
-- [react-native-gesture-handler (>= 1.0.0)](https://docs.swmansion.com/react-native-gesture-handler/)
+- [react-native-reanimated (>= 2.0.0)](https://docs.swmansion.com/react-native-reanimated/docs/installation)
+- [react-native-gesture-handler (>= 1.0.0)](https://docs.swmansion.com/react-native-gesture-handler/docs/)
+
+Open a Terminal in your project's folder and install the library using `yarn`:
 
 ```sh
 yarn add react-native-inkwell
+```
+
+or with `npm`:
+
+```sh
+npm install react-native-inkwell
 ```
 
 ## Usage
