@@ -1,6 +1,6 @@
 {
   "name": "react-native-inkwell",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A material touchable area that provides the ripple effect",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
