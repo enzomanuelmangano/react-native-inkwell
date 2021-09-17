@@ -9,11 +9,12 @@ import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
 } from 'react-native-reanimated';
+
 import type {
   DoubleTapGestureHandlerProps,
   SingleTapGestureHandlerProps,
   LongPressGestureHandlerProps,
-} from 'src/types';
+} from '../types';
 
 type UseTapGestureEventProps = SingleTapGestureHandlerProps &
   DoubleTapGestureHandlerProps &

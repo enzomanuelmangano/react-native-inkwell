@@ -1,23 +1,26 @@
 import * as React from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet, View, SafeAreaView, FlatList } from 'react-native';
 import InkWell from 'react-native-inkwell';
 
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.list}>
-        {new Array(10).fill(0).map((_, index) => (
-          <View key={index.toString()} style={styles.buttonContainer}>
-            <InkWell
-              style={styles.button}
-              onTap={() => {
-                console.log('tapped');
-              }}
-            />
-          </View>
-        ))}
-      </ScrollView>
+      <FlatList
+        data={new Array(50).fill(0)}
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={() => {
+          return (
+            <View style={styles.buttonContainer}>
+              <InkWell
+                style={styles.button}
+                onTap={() => {
+                  console.log('tapped');
+                }}
+              />
+            </View>
+          );
+        }}
+      />
     </SafeAreaView>
   );
 };
