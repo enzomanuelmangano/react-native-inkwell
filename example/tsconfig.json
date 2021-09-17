@@ -2,13 +2,9 @@
   "compilerOptions": {
     "jsx": "react-native",
     "target": "esnext",
-    "lib": [
-      "esnext"
-    ],
+    "lib": ["esnext"],
     "paths": {
-      "react-native-inkwell": [
-        ".."
-      ]
+      "react-native-inkwell": [".."]
     },
     "allowJs": true,
     "skipLibCheck": true,

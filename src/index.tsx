@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useCallback, useRef } from 'react';
+import { StyleSheet, View, ViewProps } from 'react-native';
 import {
   GestureEventPayload,
   LongPressGestureHandler,
@@ -8,7 +8,6 @@ import {
 } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
-  useAnimatedRef,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -52,7 +51,6 @@ const InkWell: React.FC<InkWellProps> = ({
   const highlightOpacity = useSharedValue(0);
 
   const scale = useSharedValue(0);
-  const aref = useAnimatedRef<View>();
 
   const onStart = useCallback(
     (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
@@ -118,21 +116,17 @@ const InkWell: React.FC<InkWellProps> = ({
     },
   });
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!aref || !aref.current) return;
-      aref.current.measure((_, __, width, height) => {
-        const rippleRadius = Math.sqrt(width ** 2 + height ** 2);
-        maxRippleRadius.value = radius
-          ? clamp(0, radius, rippleRadius)
-          : rippleRadius;
-      });
-    }, 0);
+  const onLayout: ViewProps['onLayout'] = useCallback(
+    (event) => {
+      const { width, height } = event.nativeEvent.layout;
 
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [aref, maxRippleRadius, radius]);
+      const rippleRadius = Math.sqrt(width ** 2 + height ** 2);
+      maxRippleRadius.value = radius
+        ? clamp(0, radius, rippleRadius)
+        : rippleRadius;
+    },
+    [maxRippleRadius, radius]
+  );
 
   const rStyle = useAnimatedStyle(() => {
     return {
@@ -158,7 +152,7 @@ const InkWell: React.FC<InkWellProps> = ({
   const doubleTapRef = useRef(null);
 
   return (
-    <View ref={aref} style={style}>
+    <View onLayout={onLayout} style={style}>
       <LongPressGestureHandler
         enabled={Boolean(onLongPress) && enabled}
         onGestureEvent={onLongPressGestureEvent}
