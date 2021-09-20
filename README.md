@@ -39,6 +39,8 @@ const YourRippleButton = () => (
       width: 200,
       height: 200,
       backgroundColor: 'white',
+    }}
+    contentContainerStyle={{
       alignItems: 'center',
       justifyContent: 'center',
     }}

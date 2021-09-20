@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { StyleSheet, View, ViewProps } from 'react-native';
 import {
   GestureEventPayload,
@@ -26,11 +26,14 @@ const clamp = (min: number, max: number, val: number) => {
   return Math.min(Math.max(min, val), max);
 };
 
+const inkwellChildLayoutProps = ['alignItems', 'justifyContent'];
+
 const InkWell: React.FC<InkWellProps> = ({
   enabled,
   children,
   radius,
   style,
+  contentContainerStyle,
   onTap,
   onTapDown,
   onTapCancel,
@@ -51,6 +54,22 @@ const InkWell: React.FC<InkWellProps> = ({
   const highlightOpacity = useSharedValue(0);
 
   const scale = useSharedValue(0);
+
+  const containerStyle = StyleSheet.flatten(style ?? {});
+
+  useEffect(() => {
+    if (!__DEV__) return;
+
+    const incorrectStyleAssignments = Object.keys(containerStyle).filter(
+      (value) => inkwellChildLayoutProps.includes(value)
+    );
+
+    if (incorrectStyleAssignments.length > 0) {
+      console.warn(
+        `InkWell child layout (${incorrectStyleAssignments}) must be applied through the contentContainerStyle prop`
+      );
+    }
+  }, [containerStyle]);
 
   const onStart = useCallback(
     (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
@@ -180,7 +199,13 @@ const InkWell: React.FC<InkWellProps> = ({
                 onGestureEvent={onSingleTapGestureEvent}
                 maxDurationMs={DEFAULT_TAP_MAX_DURATION_MS}
               >
-                <Animated.View style={[style, styles.content]}>
+                <Animated.View
+                  style={[
+                    { borderRadius: containerStyle.borderRadius },
+                    contentContainerStyle,
+                    styles.content,
+                  ]}
+                >
                   <Animated.View
                     style={[
                       {

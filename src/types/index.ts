@@ -23,6 +23,7 @@ type InkWellProps = {
   enabled?: boolean;
   radius?: number;
   style?: StyleProp<ViewStyle>;
+  contentContainerStyle?: StyleProp<ViewStyle>;
   children?: ReactNode;
   splashColor?: string;
   highlightColor?: string;
