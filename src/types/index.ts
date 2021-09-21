@@ -4,6 +4,7 @@ import type {
   LongPressGestureHandlerProps as LongPressGestureProps,
   TapGestureHandlerProps,
 } from 'react-native-gesture-handler';
+import type Animated from 'react-native-reanimated';
 
 type SingleTapGestureHandlerProps = {
   /**
@@ -66,6 +67,16 @@ type InkWellProps = {
    * The backgroundColor of the View when the InkWell is activated.
    */
   highlightColor?: string;
+  /**
+   * The Reanimated EasingFunction.
+   * Default: Easing.bezier(0.25, 0.5, 0.4, 1.0) (https://cubic-bezier.com/#.25,.5,.4,1)
+   */
+  easing?: Animated.WithTimingConfig['easing'];
+  /**
+   * The duration of ink scale animation.
+   * The default value depends on the component's width and height.
+   */
+  scaleDuration?: number;
   waitFor?: Ref<unknown>;
   simultaneousHandlers?: Ref<unknown>;
 } & SingleTapGestureHandlerProps &

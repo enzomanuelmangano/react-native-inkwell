@@ -119,6 +119,22 @@ Default: `500`
 
 ---
 
+### `scaleDuration?: number`
+
+The duration of ink scale animation.
+
+Default: `depends on the component's width and height.`
+
+---
+
+### `easing?: Animated.WithTimingConfig["easing"]`
+
+The Reanimated [EasingFunction](https://docs.swmansion.com/react-native-reanimated/docs/2.1.0/api/withTiming/).
+
+Default: `Easing.bezier(0.25, 0.5, 0.4, 1.0) (https://cubic-bezier.com/#.25,.5,.4,1)`
+
+---
+
 ### `splashColor?: string`
 
 The splash color of the ripple effect.
@@ -138,6 +154,12 @@ Default: `rgba(0,0,0,0.03)`;
 ### `style?: StyleProp<ViewStyle>`
 
 [A React Native style.](https://reactnative.dev/docs/style)
+
+---
+
+### `contentContainerStyle?: StyleProp<ViewStyle>`
+
+[The React Native style of the content.](https://reactnative.dev/docs/style)
 
 ---
 

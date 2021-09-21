@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
   withDelay,
   withTiming,
+  Easing,
 } from 'react-native-reanimated';
 
 import { useTapGestureEvent } from './hooks/use-tap-gesture-event';
@@ -45,6 +46,8 @@ const InkWell: React.FC<InkWellProps> = ({
   simultaneousHandlers,
   waitFor,
   minDurationMs,
+  easing,
+  scaleDuration,
 }) => {
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
@@ -87,16 +90,19 @@ const InkWell: React.FC<InkWellProps> = ({
       cancelAnimation(scale);
       scale.value = 0;
       scale.value = withTiming(1, {
-        duration: Math.max(maxRippleRadius.value / 0.3, 500),
+        duration: scaleDuration ?? Math.max(maxRippleRadius.value / 0.3, 500),
+        easing: easing ?? Easing.bezier(0.25, 0.5, 0.4, 1.0),
       });
     },
     [
       centerX,
       centerY,
+      easing,
       highlightOpacity,
       maxRippleRadius.value,
       rippleOpacity,
       scale,
+      scaleDuration,
     ]
   );
 
