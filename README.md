@@ -131,7 +131,7 @@ Default: `depends on the component's width and height.`
 
 The Reanimated [EasingFunction](https://docs.swmansion.com/react-native-reanimated/docs/2.1.0/api/withTiming/).
 
-Default: `Easing.bezier(0.25, 0.5, 0.4, 1.0) (https://cubic-bezier.com/#.25,.5,.4,1)`
+Default: [Easing.bezier(0.25, 0.5, 0.4, 1.0)](https://cubic-bezier.com/#.25,.5,.4,1)
 
 ---
 
