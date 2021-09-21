@@ -6,26 +6,65 @@ import type {
 } from 'react-native-gesture-handler';
 
 type SingleTapGestureHandlerProps = {
+  /**
+   * Called when the user taps down the InkWell.
+   */
   onTapDown?: () => void;
+  /**
+   * Called when the InkWell is clicked.
+   * If the onDoubleTap callback is not specified,
+   * onTap will be called immediately,
+   * otherwise it will be called after maxDelayMs.
+   */
   onTap?: () => void;
+  /**
+   * Called when the user cancels a tap.
+   */
   onTapCancel?: () => void;
 };
 
 type DoubleTapGestureHandlerProps = {
+  /**
+   * Called when the InkWell is clicked two consecutive times in less than maxDelayMs.
+   */
   onDoubleTap?: () => void;
 } & Pick<TapGestureHandlerProps, 'maxDelayMs'>;
 
 type LongPressGestureHandlerProps = {
+  /**
+   * Called when the component is pressed for more than minDurationMs.
+   */
   onLongPress?: () => void;
 } & Pick<LongPressGestureProps, 'minDurationMs'>;
 
 type InkWellProps = {
+  /**
+   * Indicates whether InkWell should be active or not.
+   */
   enabled?: boolean;
+  /**
+   * Decides the maximum radius of the Ripple Effect.
+   * By default the Ripple effect will determine the radius
+   * from the height and width of the component so that
+   * it can expand as much as possible.
+   */
   radius?: number;
+  /**
+   * A React Native style.
+   */
   style?: StyleProp<ViewStyle>;
+  /**
+   * The React Native style of the content.
+   */
   contentContainerStyle?: StyleProp<ViewStyle>;
   children?: ReactNode;
+  /**
+   * The splash color of the ripple effect.
+   */
   splashColor?: string;
+  /**
+   * The backgroundColor of the View when the InkWell is activated.
+   */
   highlightColor?: string;
   waitFor?: Ref<unknown>;
   simultaneousHandlers?: Ref<unknown>;
