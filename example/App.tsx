@@ -1,44 +1,18 @@
 import * as React from 'react';
-import { StyleSheet, View, SafeAreaView, FlatList, Text } from 'react-native';
-import InkWell, { InkWellRefType } from 'react-native-inkwell';
+import { StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import RippleButton from './components/RippleButton';
 
 const App = () => {
-  const onTapParent = React.useCallback(() => {
-    console.log('Parent');
+  const renderItem = React.useCallback(() => {
+    return <RippleButton />;
   }, []);
-
-  const onTapChild = React.useCallback(() => {
-    console.log('Child');
-  }, []);
-
-  const childRef = React.useRef<InkWellRefType>(null);
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={new Array(50).fill(0)}
+        data={new Array(5).fill(0)}
         keyExtractor={(_, index) => index.toString()}
-        renderItem={({ index }) => {
-          return (
-            <View style={styles.buttonContainer}>
-              <InkWell
-                style={styles.button}
-                contentContainerStyle={styles.contentButton}
-                onTap={onTapParent}
-                childRef={childRef}
-              >
-                <InkWell
-                  style={[styles.button, { height: '30%' }]}
-                  contentContainerStyle={styles.contentButton}
-                  onTap={onTapChild}
-                  ref={childRef}
-                >
-                  <Text>Child {index}</Text>
-                </InkWell>
-              </InkWell>
-            </View>
-          );
-        }}
+        renderItem={renderItem}
       />
     </SafeAreaView>
   );
@@ -48,29 +22,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.02)',
-  },
-  list: {
-    flex: 1,
-    marginTop: 20,
-  },
-  button: {
-    width: '90%',
-    height: 150,
-    backgroundColor: 'white',
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 20 },
-    shadowRadius: 10,
-    borderRadius: 20,
-    elevation: 5,
-  },
-  contentButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    width: '100%',
-    alignItems: 'center',
-    marginVertical: 10,
   },
 });
 

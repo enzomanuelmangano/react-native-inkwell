@@ -40,8 +40,12 @@ type LongPressGestureHandlerProps = {
 
 type InkWellRefType = { getLayout?: () => LayoutRectangle | null };
 
+type InkWellChildRef =
+  | RefObject<InkWellRefType>
+  | MutableRefObject<InkWellRefType>;
+
 type InkWellProps = {
-  childRef?: RefObject<InkWellRefType> | MutableRefObject<InkWellRefType>;
+  childrenRefs?: InkWellChildRef | InkWellChildRef[];
   /**
    * Indicates whether InkWell should be active or not.
    */
@@ -92,4 +96,5 @@ export {
   LongPressGestureHandlerProps,
   InkWellProps,
   InkWellRefType,
+  InkWellChildRef,
 };

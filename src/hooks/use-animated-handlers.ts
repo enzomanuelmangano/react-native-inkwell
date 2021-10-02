@@ -13,8 +13,9 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { DEFAULT_SCALE_EASING } from '../constants';
+import type { InkWellChildRef } from '../types';
 
-interface UseAnimatedHandlers extends Pick<InkWellProps, 'childRef'> {
+interface UseAnimatedHandlers extends Pick<InkWellProps, 'childrenRefs'> {
   highlightOpacity: Animated.SharedValue<number>;
   rippleOpacity: Animated.SharedValue<number>;
   maxRippleRadius: Animated.SharedValue<number>;
@@ -26,7 +27,7 @@ interface UseAnimatedHandlers extends Pick<InkWellProps, 'childRef'> {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const useAnimatedHandlers = ({
-  childRef,
+  childrenRefs,
   highlightOpacity,
   rippleOpacity,
   maxRippleRadius,
@@ -36,7 +37,7 @@ const useAnimatedHandlers = ({
   centerY,
 }: UseAnimatedHandlers) => {
   const isInChildLayout = useCallback(
-    (touchX: number, touchY: number) => {
+    (childRef: InkWellChildRef, touchX: number, touchY: number) => {
       if (!childRef?.current) return false;
       const childRefLayout = childRef?.current?.getLayout?.();
       // Unfortunately, if the UI is clicked very quickly
@@ -54,7 +55,22 @@ const useAnimatedHandlers = ({
         touchX > x && touchX < x + width && touchY > y && touchY < y + height
       );
     },
-    [childRef]
+    []
+  );
+
+  const isInChildrenLayout = useCallback(
+    (touchX: number, touchY: number) => {
+      if (!childrenRefs) return false;
+      const refs = Array.isArray(childrenRefs) ? childrenRefs : [childrenRefs];
+
+      for (const childRef of refs) {
+        if (isInChildLayout(childRef, touchX, touchY)) {
+          return true;
+        }
+      }
+      return false;
+    },
+    [childrenRefs, isInChildLayout]
   );
 
   const onStartAnimation = useCallback(
@@ -93,10 +109,10 @@ const useAnimatedHandlers = ({
 
   const onStartWrapper = useCallback(
     (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
-      if (isInChildLayout(event.x, event.y)) return;
+      if (isInChildrenLayout(event.x, event.y)) return;
       runOnUI(onStartAnimation)(event);
     },
-    [isInChildLayout, onStartAnimation]
+    [isInChildrenLayout, onStartAnimation]
   );
 
   const onStart = useCallback(
@@ -128,10 +144,10 @@ const useAnimatedHandlers = ({
 
   const onFinishWrapper = useCallback(
     (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
-      if (isInChildLayout(event.x, event.y)) return;
+      if (isInChildrenLayout(event.x, event.y)) return;
       runOnUI(onFinishAnimation)();
     },
-    [isInChildLayout, onFinishAnimation]
+    [isInChildrenLayout, onFinishAnimation]
   );
 
   const onFinish = useCallback(

@@ -53,7 +53,7 @@ const InkWell = React.forwardRef<InkWellRefType, InkWellProps>(
       minDurationMs,
       easing = DEFAULT_SCALE_EASING,
       scaleDuration,
-      childRef,
+      childrenRefs,
     } = props;
 
     const centerX = useSharedValue(0);
@@ -124,7 +124,7 @@ const InkWell = React.forwardRef<InkWellRefType, InkWellProps>(
     const doubleTapRef = useRef(null);
 
     const { onStart, onFinish } = useAnimatedHandlers({
-      childRef,
+      childrenRefs,
       highlightOpacity,
       rippleOpacity,
       maxRippleRadius,
