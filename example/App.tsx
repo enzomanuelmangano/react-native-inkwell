@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { StyleSheet, View, SafeAreaView, FlatList, Text } from 'react-native';
-import InkWell from 'react-native-inkwell';
+import InkWell, { InkWellRefType } from 'react-native-inkwell';
 
 const App = () => {
-  const onTap = React.useCallback(() => {
-    console.log('tapped');
+  const onTapParent = React.useCallback(() => {
+    console.log('Parent');
   }, []);
+
+  const onTapChild = React.useCallback(() => {
+    console.log('Child');
+  }, []);
+
+  const childRef = React.useRef<InkWellRefType>(null);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -18,9 +24,17 @@ const App = () => {
               <InkWell
                 style={styles.button}
                 contentContainerStyle={styles.contentButton}
-                onTap={onTap}
+                onTap={onTapParent}
+                childRef={childRef}
               >
-                <Text>Child {index}</Text>
+                <InkWell
+                  style={[styles.button, { height: '30%' }]}
+                  contentContainerStyle={styles.contentButton}
+                  onTap={onTapChild}
+                  ref={childRef}
+                >
+                  <Text>Child {index}</Text>
+                </InkWell>
               </InkWell>
             </View>
           );
@@ -41,7 +55,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '90%',
-    height: 100,
+    height: 150,
     backgroundColor: 'white',
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 20 },
@@ -53,7 +67,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttonContainer: { width: '100%', alignItems: 'center', marginVertical: 10 },
+  buttonContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
 });
 
 export default App;
