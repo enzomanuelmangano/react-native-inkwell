@@ -1,5 +1,5 @@
-import type { ReactNode, Ref } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { MutableRefObject, ReactNode, Ref, RefObject } from 'react';
+import type { LayoutRectangle, StyleProp, ViewStyle } from 'react-native';
 import type {
   LongPressGestureHandlerProps as LongPressGestureProps,
   TapGestureHandlerProps,
@@ -38,7 +38,14 @@ type LongPressGestureHandlerProps = {
   onLongPress?: () => void;
 } & Pick<LongPressGestureProps, 'minDurationMs'>;
 
+type InkWellRefType = { getLayout?: () => LayoutRectangle | null };
+
+type InkWellChildRef =
+  | RefObject<InkWellRefType>
+  | MutableRefObject<InkWellRefType>;
+
 type InkWellProps = {
+  childrenRefs?: InkWellChildRef | InkWellChildRef[];
   /**
    * Indicates whether InkWell should be active or not.
    */
@@ -88,4 +95,6 @@ export {
   DoubleTapGestureHandlerProps,
   LongPressGestureHandlerProps,
   InkWellProps,
+  InkWellRefType,
+  InkWellChildRef,
 };
