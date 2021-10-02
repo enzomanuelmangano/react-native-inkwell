@@ -184,8 +184,8 @@ Since the InkWell is built on top of the react-native-gesture-handler component 
 </div>
 
 Fortunately, this case study is easily handled.
-First, a Ref must be created and assigned to the InkWell that is being nested. Once this is done, the Ref must be added to the childrenRefs property of the InkWell.
-That's it.
+First, a `Ref` must be created and assigned to the `InkWell` that is being nested. Once this is done, the `Ref` must be added to the childrenRefs property of the `InkWell`.
+**That's it.**
 
 ```jsx
 const NestedInkWellUseCase = () => {
@@ -197,8 +197,9 @@ const NestedInkWellUseCase = () => {
     console.log('Child');
   }, []);
 
-  // 1. create the childRef
-  const childRef = React.useRef<InkWellRefType>(null);
+  // 1. create the refs
+  const firstChildRef = React.useRef<InkWellRefType>(null);
+  const secondChildRef = React.useRef<InkWellRefType>(null);
 
   return (
     <View style={styles.buttonContainer}>
@@ -207,11 +208,20 @@ const NestedInkWellUseCase = () => {
         style={styles.button}
         contentContainerStyle={styles.contentButton}
         onTap={onTapParent}
-        childrenRefs={childRef} // <-- 3. add the childRef to the childrenRefs
+        childrenRefs={[firstChildRef, secondChildRef]} // <-- 4. add the childRef to the childrenRefs
       >
-        {/* Nested InkWell */}
+        {/* First nested InkWell */}
         <InkWell
-          ref={childRef} // <--  2. assign the childRef
+          ref={firstChildRef} // <--  2. assign the firstChildRef
+          style={[styles.button, styles.innerButton]}
+          contentContainerStyle={styles.contentButton}
+          onTap={onTapChild}
+        >
+          <Text>Child</Text>
+        </InkWell>
+        {/* Second nested InkWell */}
+        <InkWell
+          ref={secondChildRef} // <--  3. assign the secondChildRef
           style={[styles.button, styles.innerButton]}
           contentContainerStyle={styles.contentButton}
           onTap={onTapChild}
@@ -224,13 +234,11 @@ const NestedInkWellUseCase = () => {
 };
 ```
 
-Here's the result:
+**Here's the result:**
 
 <div align="center">
     <img src="https://github.com/enzomanuelmangano/react-native-inkwell/blob/main/.assets/without_propagation.jpg" title="react-native-inkwell">
 </div>
-
-**Note**: This example considered a single nested child. Using the InkWell, you can easily manage multiple nested InkWells by passing an array of references to the childrenRefs property.
 
 ---
 
