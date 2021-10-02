@@ -175,6 +175,65 @@ The component that could be contained in the InkWell.
 
 ---
 
+## Nested InkWells
+
+Since the InkWell is built on top of the react-native-gesture-handler component [TapGestureHandler](https://docs.swmansion.com/react-native-gesture-handler/docs/api/gesture-handlers/tap-gh/), by default, upon clicking an InkWell inside another, the tap will be propagated to the parent as well.
+
+<div align="center">
+    <img src="https://github.com/enzomanuelmangano/react-native-inkwell/blob/main/.assets/default_propagation.jpg" title="react-native-inkwell">
+</div>
+
+Fortunately, this case study is easily handled.
+First, a Ref must be created and assigned to the InkWell that is being nested. Once this is done, the Ref must be added to the childrenRefs property of the InkWell.
+That's it.
+
+```jsx
+const NestedInkWellUseCase = () => {
+  const onTapParent = React.useCallback(() => {
+    console.log('Parent');
+  }, []);
+
+  const onTapChild = React.useCallback(() => {
+    console.log('Child');
+  }, []);
+
+  // 1. create the childRef
+  const childRef = React.useRef<InkWellRefType>(null);
+
+  return (
+    <View style={styles.buttonContainer}>
+      {/* Parent */}
+      <InkWell
+        style={styles.button}
+        contentContainerStyle={styles.contentButton}
+        onTap={onTapParent}
+        childrenRefs={childRef} // <-- 3. add the childRef to the childrenRefs
+      >
+        {/* Nested InkWell */}
+        <InkWell
+          ref={childRef} // <--  2. assign the childRef
+          style={[styles.button, styles.innerButton]}
+          contentContainerStyle={styles.contentButton}
+          onTap={onTapChild}
+        >
+          <Text>Child</Text>
+        </InkWell>
+      </InkWell>
+    </View>
+  );
+};
+```
+
+Here's the result:
+
+<div align="center">
+    <img src="https://github.com/enzomanuelmangano/react-native-inkwell/blob/main/.assets/without_propagation.jpg" title="react-native-inkwell">
+</div>
+
+**Note**: This example considered a single nested child. Using the InkWell, you can easily manage multiple nested InkWells by passing an array of references to the childrenRefs property.
+
+---
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.

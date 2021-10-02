@@ -45,6 +45,9 @@ type InkWellChildRef =
   | MutableRefObject<InkWellRefType>;
 
 type InkWellProps = {
+  /**
+   * Needed in order to manage nested InkWells.
+   */
   childrenRefs?: InkWellChildRef | InkWellChildRef[];
   /**
    * Indicates whether InkWell should be active or not.
