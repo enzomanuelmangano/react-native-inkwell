@@ -9,7 +9,7 @@ const useInkWellRef = (): InkWellRefType => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const useInkWellRefWrapper = (ref: any): InkWellRefType => {
-  const aref = useAnimatedRef<View>();
+  const aref = useInkWellRef();
 
   if (ref) return ref;
   return aref;

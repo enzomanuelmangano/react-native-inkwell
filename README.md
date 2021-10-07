@@ -175,6 +175,15 @@ The component that could be contained in the InkWell.
 
 ---
 
+## Hooks
+
+### `useInkWellRef`
+
+Under the hood this hook is using [useAnimatedRef from react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/docs/api/hooks/useAnimatedRef).
+When provided, it is used by the InkWell in order to measure the layout on the UI Thread.
+
+---
+
 ## Nested InkWells
 
 Since the InkWell is built on top of the react-native-gesture-handler component [TapGestureHandler](https://docs.swmansion.com/react-native-gesture-handler/docs/api/gesture-handlers/tap-gh/), by default, upon clicking an InkWell inside another, the tap will be propagated to the parent as well.
