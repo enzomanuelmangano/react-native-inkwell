@@ -6,13 +6,13 @@ import type {
 import type { InkWellProps, InkWellRefType } from 'react-native-inkwell';
 import Animated, {
   cancelAnimation,
-  measure,
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
 
 import { DEFAULT_SCALE_EASING } from '../constants';
 import { clamp } from '../utils/clamp';
+import { measureView } from '../utils/measure';
 
 interface UseAnimatedHandlers extends Pick<InkWellProps, 'childrenRefs'> {
   animatedRef: InkWellRefType;
@@ -42,29 +42,25 @@ const useAnimatedHandlers = ({
   const isInChildLayout = useCallback(
     (childRef: InkWellRefType, touchX: number, touchY: number) => {
       'worklet';
-      try {
-        if (!childRef) return;
-        const childRefLayout = measure(childRef);
+      if (!childRef) return;
+      const childRefLayout = measureView(childRef);
 
-        if (!childRefLayout) return false;
-        const { pageX, pageY, width, height } = childRefLayout;
+      // Unfortunately, if the UI is clicked very quickly
+      // in the component initialization phase,
+      // it is possible that the child's layout
+      // is not ready to be measured.
+      // In this situation, if the InkWell has a child,
+      // I don't start the animation assuming by
+      // default that it is clicking on the child.
+      if (!childRefLayout) return true;
+      const { pageX, pageY, width, height } = childRefLayout;
 
-        return (
-          touchX > pageX &&
-          touchX < pageX + width &&
-          touchY > pageY &&
-          touchY < pageY + height
-        );
-      } catch {
-        // Unfortunately, if the UI is clicked very quickly
-        // in the component initialization phase,
-        // it is possible that the child's getLayout
-        // function has not yet been created.
-        // In this situation, if the InkWell has a child,
-        // I don't start the animation assuming by
-        // default that it is clicking on the child.
-        return true;
-      }
+      return (
+        touchX > pageX &&
+        touchX < pageX + width &&
+        touchY > pageY &&
+        touchY < pageY + height
+      );
     },
     []
   );
@@ -91,7 +87,9 @@ const useAnimatedHandlers = ({
       event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>
     ) => {
       'worklet';
-      const { width, height } = measure(animatedRef);
+      const viewLayout = measureView(animatedRef);
+      if (!viewLayout) return;
+      const { width, height } = viewLayout;
 
       const rippleRadius = Math.sqrt(width ** 2 + height ** 2);
       maxRippleRadius.value = radius
@@ -132,21 +130,13 @@ const useAnimatedHandlers = ({
     ]
   );
 
-  const onStartWrapper = useCallback(
+  const onStart = useCallback(
     (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
       'worklet';
       if (isInChildrenLayout(event.absoluteX, event.absoluteY)) return;
       onStartAnimation(event);
     },
     [isInChildrenLayout, onStartAnimation]
-  );
-
-  const onStart = useCallback(
-    (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
-      'worklet';
-      onStartWrapper(event);
-    },
-    [onStartWrapper]
   );
 
   const onFinishAnimation = useCallback(() => {
@@ -168,21 +158,13 @@ const useAnimatedHandlers = ({
     });
   }, [highlightOpacity, maxRippleRadius.value, rippleOpacity, scale]);
 
-  const onFinishWrapper = useCallback(
+  const onFinish = useCallback(
     (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
       'worklet';
       if (isInChildrenLayout(event.absoluteX, event.absoluteY)) return;
       onFinishAnimation();
     },
     [isInChildrenLayout, onFinishAnimation]
-  );
-
-  const onFinish = useCallback(
-    (event: Readonly<GestureEventPayload & TapGestureHandlerEventPayload>) => {
-      'worklet';
-      onFinishWrapper(event);
-    },
-    [onFinishWrapper]
   );
 
   return { onStart, onFinish };
