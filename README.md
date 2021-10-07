@@ -198,8 +198,8 @@ const NestedInkWellUseCase = () => {
   }, []);
 
   // 1. create the refs
-  const firstChildRef = React.useRef<InkWellRefType>(null);
-  const secondChildRef = React.useRef<InkWellRefType>(null);
+  const firstChildRef = useInkWellRef();
+  const secondChildRef = useInkWellRef();
 
   return (
     <View style={styles.buttonContainer}>
