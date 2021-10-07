@@ -5,7 +5,6 @@ import {
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Animated, {
-  useAnimatedRef,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
@@ -18,19 +17,9 @@ import {
   INKWELL_CHILD_LAYOUT_PROPS,
 } from './constants';
 import { useAnimatedHandlers } from './hooks/use-animated-handlers';
+import { useInkWellRef, useInkWellRefWrapper } from './hooks/use-inkwell-ref';
 import { useTapGestureEvent } from './hooks/use-tap-gesture-event';
 import type { InkWellProps, InkWellRefType } from './types';
-
-const useInkWellRef = (): InkWellRefType => {
-  return useAnimatedRef<View>();
-};
-
-const useInkWellRefWrapper = (ref: any): InkWellRefType => {
-  const aref = useAnimatedRef<View>();
-
-  if (ref) return ref;
-  return aref;
-};
 
 const InkWell = React.forwardRef<View, InkWellProps>((props, inkwellRef) => {
   const {
