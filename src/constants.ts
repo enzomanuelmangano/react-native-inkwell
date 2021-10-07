@@ -5,7 +5,11 @@ const DEFAULT_HIGHLIGHT_COLOR = 'rgba(0,0,0,0.03)';
 const DEFAULT_TAP_MAX_DURATION_MS = 3000;
 const DEFAULT_SCALE_EASING = Easing.bezier(0.25, 0.5, 0.4, 1.0);
 
-const INKWELL_CHILD_LAYOUT_PROPS = ['alignItems', 'justifyContent'];
+const INKWELL_CHILD_LAYOUT_PROPS = [
+  'alignItems',
+  'flexDirection',
+  'justifyContent',
+];
 
 export {
   DEFAULT_SPLASH_COLOR,
