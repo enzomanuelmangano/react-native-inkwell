@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import InkWell, { InkWellRefType } from 'react-native-inkwell';
+import InkWell, { useInkWellRef } from 'react-native-inkwell';
 
 export default function RippleButton() {
   const onTapParent = React.useCallback(() => {
@@ -11,8 +11,8 @@ export default function RippleButton() {
     console.log('Child');
   }, []);
 
-  const firstChildRef = React.useRef<InkWellRefType>(null);
-  const secondChildRef = React.useRef<InkWellRefType>(null);
+  const firstChildRef = useInkWellRef();
+  const secondChildRef = useInkWellRef();
 
   return (
     <View style={styles.buttonContainer}>
